@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreshTrack | Smart Food Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- LOCAL DEMO AUTHENTICATION -->
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <span class="auth-logo">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M10 34c0-14 12-24 36-25 1 24-8 39-24 39-7 0-12-5-12-14Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+            <path d="M14 50c9-12 18-20 32-29" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+            <path d="M42 42v10M49 38v14M56 44v8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Fresh<span>Track</span></span>
+      </div>
+      <p class="auth-kicker">A FRESHER, SMARTER PANTRY</p>
+      <h1 id="authTitle">Welcome back</h1>
+      <p class="auth-subtitle" id="authSubtitle">Log in to manage your pantry and reduce food waste.</p>
+
+      <form id="loginForm" class="auth-form">
+        <label>Email address<input id="loginEmail" type="email" autocomplete="username" placeholder="you@example.com" required></label>
+        <label>Password<input id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter your password" required></label>
+        <p id="loginError" class="auth-error" aria-live="polite"></p>
+        <button class="primary-btn auth-submit" type="submit">Log in to FreshTrack</button>
+        <p class="auth-switch">New to FreshTrack? <button type="button" id="showSignup">Create an account</button></p>
+      </form>
+
+      <form id="signupForm" class="auth-form hidden">
+        <label>Full name<input id="signupName" type="text" autocomplete="name" placeholder="Your full name" required></label>
+        <label>Email address<input id="signupEmail" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+        <label>Phone number <span class="optional-label">(optional)</span><input id="signupPhone" type="tel" autocomplete="tel" placeholder="+91"></label>
+        <label>Create password<input id="signupPassword" type="password" autocomplete="new-password" minlength="6" placeholder="At least 6 characters" required></label>
+        <p id="signupError" class="auth-error" aria-live="polite"></p>
+        <button class="primary-btn auth-submit" type="submit">Create my account</button>
+        <p class="auth-switch">Already have an account? <button type="button" id="showLogin">Log in</button></p>
+      </form>
+      <p class="auth-demo-note">Demo account: details are saved only in this browser. This is not secure server-based authentication.</p>
+    </div>
+  </section>
+
+  <div class="app-layout" id="appLayout">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="FreshTrack home">
+        <span class="brand-icon">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M9 34C9 19 22 9 47 8c1 24-8 40-25 40-8 0-13-6-13-14Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+            <path d="M14 51c9-12 18-21 33-30" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+            <path d="M43 43v9M50 39v13M57 45v7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Fresh<span class="brand-highlight">Track</span></span>
+      </a>
+
+      <p class="nav-label">WORKSPACE</p>
+      <nav class="navigation">
+        <button class="nav-link active" data-target="dashboard"><span>▦</span> Dashboard</button>
+        <button class="nav-link" data-target="inventory"><span>◈</span> Food Inventory</button>
+        <button class="nav-link" data-target="barcode"><span>▥</span> Barcode Lookup</button>
+        <button class="nav-link" data-target="recipes"><span>🍲</span> Recipe Ideas</button>
+        <button class="nav-link" data-target="shopping"><span>🛒</span> Smart Shopping</button>
+        <button class="nav-link" data-target="nutrition"><span>✳</span> Nutrition Insights</button>
+        <button class="nav-link" data-target="waste"><span>↗</span> Food Waste & Savings</button>
+        <button class="nav-link" data-target="donate"><span>♡</span> Donate Food</button>
+        <button class="nav-link" data-target="settings"><span>⚙</span> Settings</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-tip">
+          <span class="tip-icon">✦</span>
+          <h4>Small steps, less waste.</h4>
+          <p>Track your food today and make tomorrow more sustainable.</p>
+        </div>
+
+        <button class="profile" id="profileShortcut" type="button" title="Open your profile">
+          <div class="avatar" id="sidebarAvatar">F</div>
+          <div class="profile-copy">
+            <strong id="sidebarProfileName">FreshTrack User</strong>
+            <small id="sidebarProfileEmail">Personal pantry</small>
+          </div>
+          <span class="profile-chevron">›</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb">
+          <span>Workspace</span>
+          <span class="breadcrumb-separator">/</span>
+          <strong id="pageTitle">Dashboard</strong>
+        </div>
+        <div class="top-actions">
+          <button class="notification-btn" id="notifyBtn" title="Enable notifications">♧ <span class="notification-dot"></span></button>
+          <button class="theme-btn" id="themeBtn" title="Toggle theme">☀</button>
+        </div>
+      </header>
+
+      <!-- DASHBOARD -->
+      <section class="view active-view" id="dashboard">
+        <div class="welcome-heading">
+          <div>
+            <p class="eyebrow">YOUR SMART PANTRY</p>
+            <h1>Good food. <span>Less waste.</span></h1>
+            <p class="muted">Keep your kitchen organized and your food fresh.</p>
+          </div>
+          <button class="primary-btn" data-open="inventory">＋ Add food</button>
+        </div>
+
+        <div class="hero-grid">
+          <article class="hero-box hero-purple">
+            <div class="hero-content">
+              <span class="hero-tag">✦ SMART PANTRY</span>
+              <h2>Your food,<br>under control.</h2>
+              <p>Know what you have, what to use first, and what you actually need to buy.</p>
+              <button class="hero-btn" data-open="inventory">Manage inventory ↗</button>
+            </div>
+            <div class="hero-art">🥑</div>
+            <div class="hero-orb orb-one"></div>
+            <div class="hero-orb orb-two"></div>
+          </article>
+
+          <article class="hero-box hero-cyan">
+            <div class="hero-content">
+              <span class="hero-tag">◈ FRESHNESS ALERT</span>
+              <h2 style="color: white;">Save food.<br>Save money.</h2>
+              <p id="heroExpiryMessage" style="color: rgb(204, 195, 195);">Add your groceries to get personalized expiry reminders.</p>
+              <button class="hero-btn" data-open="shopping">View smart shopping ↗</button>
+            </div>
+            <div class="hero-art">🌱</div>
+            <div class="hero-orb orb-one"></div>
+            <div class="hero-orb orb-two"></div>
+          </article>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top"><span>Total food items</span><span class="stat-icon purple-icon">▦</span></div>
+            <h2 id="totalItems">0</h2>
+            <p class="stat-foot">Items in your pantry</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Expiring soon</span><span class="stat-icon orange-icon">◷</span></div>
+            <h2 id="expiringItems">0</h2>
+            <p class="stat-foot">Within the next 3 days</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Expired items</span><span class="stat-icon red-icon">!</span></div>
+            <h2 id="expiredItems">0</h2>
+            <p class="stat-foot">Review these items</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Money saved</span><span class="stat-icon green-icon">₹</span></div>
+            <h2 id="savedAmount">₹0</h2>
+            <p class="stat-foot">From food marked consumed</p>
+          </article>
+        </div>
+
+        <div class="two-column">
+          <article class="panel">
+            <div class="panel-heading">
+              <div><h3>Expiry overview</h3><p>Food that needs your attention</p></div>
+              <button class="text-btn" data-open="inventory">View all ↗</button>
+            </div>
+            <div id="expiryOverview" class="overview-list">
+              <div class="empty-message">Your pantry is waiting for its first item.</div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div><h3>Waste reduction</h3><p>Your positive kitchen impact</p></div>
+              <span class="panel-symbol">✳</span>
+            </div>
+            <div class="impact-number" id="dashboardSaved">₹0</div>
+            <p class="muted small">Estimated value of food you have consumed.</p>
+            <div class="progress-track"><div class="progress-fill" id="impactProgress"></div></div>
+            <p class="progress-caption" id="impactCaption">Every item counts.</p>
+            <button class="secondary-btn full-btn" data-open="waste">View waste tracker</button>
+          </article>
+        </div>
+
+        <article class="panel smart-tip">
+          <div class="tip-symbol">✦</div>
+          <div>
+            <h3>Smart kitchen tip</h3>
+            <p id="smartTip">Check your pantry before shopping. Buying only what you need helps prevent food waste.</p>
+          </div>
+        </article>
+      </section>
+
+      <!-- FOOD INVENTORY -->
+      <section class="view" id="inventory">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PANTRY MANAGEMENT</p>
+            <h1>Food inventory</h1>
+            <p class="muted">Add, update, consume or remove your groceries.</p>
+          </div>
+        </div>
+
+        <div class="panel form-panel">
+          <div class="panel-heading">
+            <div>
+              <h3 id="foodFormTitle">＋ Add a food item</h3>
+              <p>Enter the details shown on your food package.</p>
+            </div>
+          </div>
+
+          <form id="foodForm">
+            <input type="hidden" id="editFoodId">
+            <div class="form-grid">
+              <label>Food name
+                <input id="foodName" type="text" placeholder="e.g. Milk, Rice, Apples" required>
+              </label>
+              <label>Category
+                <select id="category" required>
+                  <option value="Vegetables">Vegetables</option>
+                  <option value="Fruits">Fruits</option>
+                  <option value="Dairy">Dairy</option>
+                  <option value="Grains">Grains</option>
+                  <option value="Protein">Protein</option>
+                  <option value="Snacks">Snacks</option>
+                  <option value="Other">Other</option>
+                </select>
+              </label>
+              <label>Quantity
+                <input id="quantity" type="number" min="0.1" step="0.1" placeholder="e.g. 2" required>
+              </label>
+              <label>Unit
+                <select id="unit">
+                  <option value="pieces">Pieces</option>
+                  <option value="kg">Kilograms</option>
+                  <option value="g">Grams</option>
+                  <option value="litres">Litres</option>
+                  <option value="ml">Millilitres</option>
+                  <option value="packs">Packs</option>
+                </select>
+              </label>
+              <label>Expiry date
+                <input id="expiryDate" type="date" required>
+              </label>
+              <label>Estimated price (₹)
+                <input id="foodPrice" type="number" min="0" step="0.01" placeholder="e.g. 60">
+              </label>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary-btn" id="saveFoodBtn">Save food item</button>
+              <button type="button" class="secondary-btn hidden" id="cancelEditBtn">Cancel edit</button>
+            </div>
+          </form>
+        </div>
+
+        <article class="panel">
+          <div class="panel-heading inventory-heading">
+            <div><h3>Your pantry</h3><p>Search and manage your stored food.</p></div>
+            <input id="searchInput" class="search-input" type="search" placeholder="Search food...">
+          </div>
+          <div id="foodList" class="food-grid"></div>
+          <div id="emptyState" class="empty-message">No food items yet. Add your first grocery above.</div>
+        </article>
+      </section>
+
+      <!-- BARCODE LOOKUP -->
+      <section class="view" id="barcode">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">QUICK PRODUCT LOOKUP</p>
+            <h1>Barcode lookup</h1>
+            <p class="muted">Scan a product or enter its barcode to look up available product details.</p>
+          </div>
+        </div>
+
+        <article class="panel barcode-panel">
+          <div class="barcode-symbol">▥</div>
+          <h3>Find product information</h3>
+          <p class="muted">Use your camera or enter the barcode digits below.</p>
+          <div id="reader" class="scanner-box"></div>
+          <div class="scanner-actions">
+            <button class="primary-btn" id="startScanBtn">▥ Start camera scanner</button>
+            <button class="secondary-btn" id="stopScanBtn" disabled>Stop scanner</button>
+          </div>
+          <form id="barcodeForm" class="inline-form barcode-form">
+            <input id="barcodeInput" type="text" inputmode="numeric" placeholder="Enter barcode number..." required>
+            <button type="submit" class="primary-btn">Look up</button>
+          </form>
+          <p id="scannerMessage" class="status-message">Camera scanning requires permission and a secure context, such as localhost.</p>
+          <div id="barcodeResult" class="barcode-result"></div>
+          <button id="addScannedFoodBtn" class="primary-btn hidden">＋ Use product in inventory</button>
+        </article>
+      </section>
+
+      <!-- RECIPE IDEAS -->
+      <section class="view" id="recipes">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">COOK SMART, WASTE LESS</p>
+            <h1>Recipe ideas</h1>
+            <p class="muted">Discover simple meals using ingredients already in your pantry, especially food nearing expiry.</p>
+          </div>
+        </div>
+        <article class="panel recipe-panel">
+          <div class="panel-heading">
+            <div><h3>🍽️ What can I cook today?</h3><p>Recipes are suggested from your current food inventory.</p></div>
+            <button class="secondary-btn" id="refreshRecipesBtn" type="button">↻ Refresh ideas</button>
+          </div>
+          <div id="recipeSummary" class="recipe-summary"></div>
+          <div id="recipeList" class="recipe-grid"></div>
+          <div id="recipeEmpty" class="empty-message hidden">Add food to your inventory to get recipe ideas.</div>
+        </article>
+      </section>
+
+      <!-- SMART SHOPPING -->
+      <section class="view" id="shopping">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">BUY ONLY WHAT YOU NEED</p>
+            <h1>Smart shopping list</h1>
+            <p class="muted">Suggestions are based on your current pantry and food nearing expiry.</p>
+          </div>
+        </div>
+
+        <article class="panel recommendation-panel">
+          <div class="panel-heading">
+            <div><h3>✦ Recommended groceries</h3><p>Review your pantry and add what you actually need.</p></div>
+            <button class="secondary-btn" id="refreshRecommendationsBtn">↻ Refresh</button>
+          </div>
+          <div id="shoppingRecommendations" class="recommendation-grid"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <div><h3>My shopping list</h3><p>Add items manually or use the recommendations above.</p></div>
+            <span class="count-pill" id="shoppingCount">0 items</span>
+          </div>
+          <form id="shoppingForm" class="inline-form">
+            <input id="shoppingInput" type="text" placeholder="e.g. Onions, tomatoes, rice..." required>
+            <button type="submit" class="primary-btn">＋ Add item</button>
+          </form>
+          <div id="shoppingList" class="shopping-list"></div>
+          <div id="shoppingEmpty" class="empty-message">Your shopping list is empty.</div>
+        </article>
+      </section>
+
+      <!-- NUTRITION INSIGHTS -->
+      <section class="view" id="nutrition">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">EAT WITH AWARENESS</p>
+            <h1>Nutrition insights</h1>
+            <p class="muted">Explore approximate nutrition information for common foods in your pantry.</p>
+          </div>
+        </div>
+
+        <div class="stats-grid nutrition-stats">
+          <article class="stat-card">
+            <div class="stat-top"><span>Food items tracked</span><span class="stat-icon purple-icon">◈</span></div>
+            <h2 id="nutritionCount">0</h2>
+            <p class="stat-foot">Current inventory</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Food categories</span><span class="stat-icon green-icon">✳</span></div>
+            <h2 id="nutritionCategories">0</h2>
+            <p class="stat-foot">Different food groups</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Fresh foods</span><span class="stat-icon cyan-icon">♡</span></div>
+            <h2 id="nutritionFresh">0</h2>
+            <p class="stat-foot">Not expired</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Food to use soon</span><span class="stat-icon orange-icon">◷</span></div>
+            <h2 id="nutritionSoon">0</h2>
+            <p class="stat-foot">Within 3 days</p>
+          </article>
+        </div>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <h3>Common food nutrition guide</h3>
+              <p>Approximate values per 100 g, or per 100 ml for milk.</p>
+            </div>
+          </div>
+
+          <form id="nutritionSearchForm" class="nutrition-search-form">
+            <label for="nutritionSearchInput">Search a food item for nutrition insights</label>
+            <div class="nutrition-search-row">
+              <input id="nutritionSearchInput" type="search" placeholder="Try apple, oats, paneer, milk..." required>
+              <button type="submit" class="primary-btn" id="nutritionSearchBtn">Search nutrition</button>
+            </div>
+            <p class="muted small">Searches a built-in food guide first, then checks Open Food Facts for matching packaged foods.</p>
+          </form>
+          <div id="nutritionSearchResult" class="nutrition-search-result" aria-live="polite"></div>
+
+          <div class="table-wrap">
+            <table class="nutrition-table">
+              <thead>
+                <tr>
+                  <th>Food</th>
+                  <th>Calories</th>
+                  <th>Protein</th>
+                  <th>Carbohydrates</th>
+                  <th>Fat</th>
+                </tr>
+              </thead>
+              <tbody id="nutritionTable"></tbody>
+            </table>
+          </div>
+          <p class="muted small nutrition-note">Values are general estimates, not medical or dietary advice. Actual nutrition depends on variety, brand and preparation.</p>
+        </article>
+      </section>
+
+      <!-- FOOD WASTE -->
+      <section class="view" id="waste">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">MAKE EVERY ITEM COUNT</p>
+            <h1>Food waste & savings</h1>
+            <p class="muted">Track food consumed, food wasted and the estimated value saved.</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top"><span>Food consumed</span><span class="stat-icon green-icon">✓</span></div>
+            <h2 id="wasteConsumed">0</h2>
+            <p class="stat-foot">Items marked consumed</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Food wasted</span><span class="stat-icon red-icon">!</span></div>
+            <h2 id="wasteCount">0</h2>
+            <p class="stat-foot">Items marked wasted</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Money saved</span><span class="stat-icon purple-icon">₹</span></div>
+            <h2 id="wasteSaved">₹0</h2>
+            <p class="stat-foot">Estimated value consumed</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Waste value</span><span class="stat-icon orange-icon">↘</span></div>
+            <h2 id="wasteValue">₹0</h2>
+            <p class="stat-foot">Estimated value wasted</p>
+          </article>
+        </div>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <div><h3>How to track food</h3><p>Use the buttons on each item in your inventory.</p></div>
+          </div>
+          <div class="info-row"><span class="info-icon green-icon">✓</span><div><strong>Mark as consumed</strong><p>Records the food you used and adds its estimated price to your savings.</p></div></div>
+          <div class="info-row"><span class="info-icon red-icon">!</span><div><strong>Mark as wasted</strong><p>Records food you discarded and estimates its value.</p></div></div>
+          <div class="info-row"><span class="info-icon purple-icon">✦</span><div><strong>Prevent future waste</strong><p>Use expiry reminders and smart shopping recommendations to plan ahead.</p></div></div>
+        </article>
+      </section>
+
+      <!-- DONATE FOOD -->
+      <section class="view" id="donate">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">SHARE GOODNESS</p>
+            <h1>Donate food</h1>
+            <p class="muted">Record food you would like to offer for donation.</p>
+          </div>
+        </div>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <div><h3>＋ Create a donation offer</h3><p>Only offer suitable food that is safe to donate.</p></div>
+          </div>
+          <form id="donationForm">
+            <div class="form-grid">
+              <label>Food name<input id="donationFood" type="text" placeholder="e.g. Packaged rice" required></label>
+              <label>Quantity<input id="donationQty" type="text" placeholder="e.g. 2 sealed packs" required></label>
+              <label>Available until<input id="donationDate" type="date" required></label>
+              <label>Food type
+                <select id="donationType">
+                  <option>Sealed packaged food</option>
+                  <option>Fresh produce</option>
+                  <option>Other suitable food</option>
+                </select>
+              </label>
+            </div>
+            <label>Notes (optional)<textarea id="donationNotes" rows="3" placeholder="Add pickup or storage details..."></textarea></label>
+            <button class="primary-btn" type="submit">Save donation offer</button>
+          </form>
+        </article>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <div><h3>My donation offers</h3><p>Offers stored in this browser.</p></div>
+          </div>
+          <div id="donationList" class="donation-list"></div>
+          <div id="donationEmpty" class="empty-message">No donation offers yet.</div>
+          <p class="muted small">Saving an offer here does not publish it to charities or arrange a pickup. Contact a verified local food donation organization directly.</p>
+        </article>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="view" id="settings">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">MAKE IT YOURS</p>
+            <h1>Settings</h1>
+            <p class="muted">Customize your FreshTrack experience.</p>
+          </div>
+        </div>
+
+        <article class="panel settings-panel">
+          <div class="setting-row">
+            <div><strong>Dark appearance</strong><p>Use a dark interface with bright accent colors.</p></div>
+            <button class="toggle-switch" id="darkToggle" role="switch" aria-checked="true" aria-label="Toggle dark mode"><span></span></button>
+          </div>
+          <div class="setting-row">
+            <div><strong>Browser expiry notifications</strong><p>Allow this browser to notify you about food expiring soon.</p></div>
+            <button class="secondary-btn" id="settingsNotifyBtn">Enable notifications</button>
+          </div>
+          <div class="setting-row">
+            <div><strong>Export your data</strong><p>Download your food inventory, shopping list and records as JSON.</p></div>
+            <button class="secondary-btn" id="exportBtn">↓ Export data</button>
+          </div>
+          <div class="setting-row">
+            <div><strong>Reset app data</strong><p>Clear locally stored inventory, shopping and donation records.</p></div>
+            <button class="danger-btn" id="resetBtn">Reset data</button>
+          </div>
+        </article>
+
+        <div class="notice-card">
+          <strong>Privacy note</strong>
+          <p>This demo stores data in your browser using localStorage. It does not provide secure server-based accounts or automatic background push notifications.</p>
+        </div>
+      </section>
+
+      <!-- USER PROFILE -->
+      <section class="view" id="profile">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">YOUR ACCOUNT</p>
+            <h1>My profile</h1>
+            <p class="muted">View and update the details connected to your FreshTrack account.</p>
+          </div>
+        </div>
+        <article class="panel profile-panel">
+          <div class="profile-hero">
+            <div class="profile-large-avatar" id="profileAvatar">F</div>
+            <div><h2 id="profileDisplayName">FreshTrack User</h2><p id="profileDisplayEmail" class="muted">—</p></div>
+          </div>
+          <form id="profileForm">
+            <div class="form-grid">
+              <label>Full name<input id="profileName" type="text" required></label>
+              <label>Email address<input id="profileEmail" type="email" disabled></label>
+              <label>Phone number<input id="profilePhone" type="tel" placeholder="Add your phone number"></label>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary-btn">Save profile</button>
+              <button type="button" class="danger-btn" id="logoutBtn">Log out</button>
+            </div>
+          </form>
+        </article>
+        <div class="notice-card"><strong>Account storage</strong><p>This front-end demo keeps account details in this browser only. Do not use a real or reused password here. A production login needs a secure backend and password hashing.</p></div>
+      </section>
+
+      <footer class="footer">
+        <span>✦ FreshTrack</span>
+        <span>Waste less. Live fresh.</span>
+      </footer>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <script src="script.js"></script>
+</body>
+</html>
